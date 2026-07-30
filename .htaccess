@@ -7,6 +7,13 @@ ErrorDocument 404 /jogos/404.html
 # Dashboard Padrão
 DirectoryIndex index_ps5.html
 
+# URLs amigáveis para os Temas PlayStation
+RewriteRule ^ps2/?$ index_ps2.html [L]
+RewriteRule ^ps3/?$ index_ps3.html [L]
+RewriteRule ^ps4/?$ index_ps4.html [L]
+RewriteRule ^ps5/?$ index_ps5.html [L]
+
+
 # Remover extensão .html
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}\.html -f
