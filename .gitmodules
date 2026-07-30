@@ -1,0 +1,3 @@
+[submodule "decifra"]
+	path = decifra
+	url = https://github.com/JoaoPalmasBR/decifra.git
