@@ -9,7 +9,7 @@
         :root {
             --ps4-blue: #003791;
             --ps4-light-blue: #0072ce;
-            --ps4-bg: linear-gradient(135deg, #001233 0%, #003791 50%, #0072ce 100%);
+            --ps4-bg: linear-gradient(135deg, #000c24 0%, #002b7a 50%, #005bb5 100%);
         }
 
         * {
@@ -30,6 +30,19 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            position: relative;
+        }
+
+        /* Particle Overlay */
+        #particle-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.4;
         }
 
         /* Top Bar */
@@ -39,29 +52,57 @@
             width: 100%;
             display: flex;
             justify-content: flex-end;
-            padding: 30px 50px;
+            align-items: center;
+            padding: 30px 60px;
             gap: 30px;
-            opacity: 0.8;
-            font-size: 20px;
+            z-index: 10;
+            opacity: 0.85;
+            font-size: 18px;
         }
 
-        /* Main Content */
+        .header-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .header-item:hover {
+            opacity: 1;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #0072ce;
+            border: 2px solid #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* Content Area */
         .content-area {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            padding-left: 100px;
-            margin-top: -50px;
+            padding-left: 80px;
+            margin-top: -30px;
+            z-index: 10;
         }
 
         .game-title-header {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             font-weight: 300;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             opacity: 0;
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            transform: translateY(-12px);
+            transition: all 0.35s ease;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.6);
         }
 
         .game-title-header.visible {
@@ -70,21 +111,28 @@
         }
 
         /* Carousel */
+        .carousel-wrapper {
+            width: 100%;
+            overflow: visible;
+        }
+
         .carousel {
             display: flex;
-            gap: 10px;
-            transition: transform 0.3s ease-out;
+            gap: 16px;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .game-tile {
-            width: 200px;
-            height: 200px;
-            background: rgba(255,255,255,0.1);
+            min-width: 190px;
+            width: 190px;
+            height: 190px;
+            background: rgba(255,255,255,0.08);
             border: 2px solid transparent;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            transition: all 0.2s;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            transition: all 0.25s ease;
             cursor: pointer;
             position: relative;
+            overflow: hidden;
         }
 
         .game-tile img {
@@ -94,18 +142,24 @@
         }
 
         .game-tile.active {
-            transform: scale(1.15);
-            border-color: #fff;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            transform: scale(1.16);
+            border-color: #ffffff;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.7), 0 0 25px rgba(0, 114, 206, 0.8);
             z-index: 10;
         }
 
-        /* Game Info Details */
+        /* Game Details Card */
         .game-info {
-            margin-top: 50px;
-            max-width: 600px;
+            margin-top: 45px;
+            max-width: 650px;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.35s ease;
+            background: rgba(0, 15, 45, 0.4);
+            padding: 25px;
+            border-radius: 12px;
+            -webkit-backdrop-filter: blur(15px);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .game-info.visible {
@@ -114,92 +168,201 @@
 
         .game-desc {
             font-size: 1.1rem;
-            line-height: 1.5;
-            color: #d0e5ff;
-            margin-bottom: 20px;
+            line-height: 1.6;
+            color: #d6e8ff;
+            margin-bottom: 25px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
         }
 
         .play-btn {
-            background-color: transparent;
-            color: #fff;
-            border: 2px solid #fff;
-            padding: 10px 30px;
-            font-size: 1.1rem;
+            background-color: #ffffff;
+            color: var(--ps4-blue);
+            border: none;
+            padding: 12px 36px;
+            font-size: 1.15rem;
+            font-weight: 700;
             text-decoration: none;
             display: inline-block;
             transition: all 0.2s;
+            border-radius: 4px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
         .play-btn:hover {
-            background-color: #fff;
-            color: var(--ps4-blue);
+            background-color: #e6f0ff;
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(255,255,255,0.4);
         }
 
-        /* Theme Switcher */
-        .theme-switcher {
+        .option-btn {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 12px 20px;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .option-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Pill Switcher Widget */
+        .theme-switcher-pill {
             position: absolute;
             bottom: 30px;
-            right: 50px;
+            right: 60px;
             display: flex;
-            gap: 10px;
-            background: rgba(0,0,0,0.3);
-            padding: 10px;
-            border-radius: 5px;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0, 15, 45, 0.65);
+            padding: 6px 8px;
+            border-radius: 30px;
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            z-index: 20;
         }
 
         .theme-btn {
-            color: #ccc;
+            background: transparent;
+            color: rgba(255,255,255,0.6);
+            border: none;
+            padding: 8px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.88rem;
+            transition: all 0.25s ease;
             text-decoration: none;
-            padding: 5px 15px;
-            border-radius: 3px;
-            font-size: 0.9rem;
-            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .theme-btn:hover {
-            background: rgba(255,255,255,0.2);
             color: #fff;
+            background: rgba(255,255,255,0.1);
         }
 
         .theme-btn.active {
-            background: #fff;
             color: var(--ps4-blue);
-            font-weight: bold;
+            background: #ffffff;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(255,255,255,0.3);
+        }
+
+        .theme-btn .led {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #555;
+        }
+
+        .theme-btn.active .led {
+            background: #0072ce;
+            box-shadow: 0 0 6px #0072ce;
         }
     </style>
 </head>
 <body>
 
+    <canvas id="particle-canvas"></canvas>
+
     <header>
-        <div>➕</div>
-        <div>👥</div>
-        <div>🏆</div>
-        <div>⚙️</div>
+        <div class="header-item" title="Notificações">🔔 <span>3</span></div>
+        <div class="header-item" title="Amigos">👥</div>
+        <div class="header-item" title="Troféus">🏆</div>
+        <div class="header-item" title="Perfil"><div class="user-avatar">JP</div></div>
+        <div class="header-item" id="live-clock">12:00</div>
     </header>
 
     <div class="content-area">
         <div class="game-title-header" id="game-title">Carregando...</div>
         
-        <div class="carousel" id="carousel">
-            <!-- Tiles -->
+        <div class="carousel-wrapper">
+            <div class="carousel" id="carousel">
+                <!-- Tiles -->
+            </div>
         </div>
 
         <div class="game-info" id="game-info">
             <p class="game-desc" id="game-desc"></p>
-            <a href="#" class="play-btn" id="play-btn">Iniciar</a>
+            <div class="btn-group">
+                <a href="#" class="play-btn" id="play-btn">Iniciar</a>
+                <button class="option-btn">⋯ Opções</button>
+            </div>
         </div>
     </div>
 
-    <div class="theme-switcher">
-        <a href="index_ps2.html" class="theme-btn">PS2</a>
-        <a href="index_ps3.html" class="theme-btn">PS3</a>
-        <a href="index_ps4.html" class="theme-btn active">PS4</a>
-        <a href="index_ps5.html" class="theme-btn">PS5</a>
+    <!-- Seletor Pill Estilizado -->
+    <div class="theme-switcher-pill">
+        <a href="index_ps2.html" class="theme-btn"><span class="led"></span>PS2</a>
+        <a href="index_ps3.html" class="theme-btn"><span class="led"></span>PS3</a>
+        <a href="index_ps4.html" class="theme-btn active"><span class="led"></span>PS4</a>
+        <a href="index_ps5.html" class="theme-btn"><span class="led"></span>PS5</a>
     </div>
 
     <script>
         let jogos = [];
         let currentIndex = 0;
+
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('live-clock').textContent = `${hours}:${minutes}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Canvas de Partículas Estilo PS4
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        for (let i = 0; i < 40; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 2 + 1,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: -Math.random() * 0.5 - 0.2,
+                alpha: Math.random() * 0.5 + 0.2
+            });
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.y < 0) p.y = canvas.height;
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
+                ctx.fill();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
 
         async function carregarJogos() {
             try {
@@ -261,9 +424,8 @@
                 title.classList.add('visible');
                 info.classList.add('visible');
                 
-                // Centralizar o carrossel (ajuste básico)
-                const offset = index * -210; 
-                document.getElementById('carousel').style.transform = `translateX(${offset + 50}px)`;
+                const offset = index * -206; 
+                document.getElementById('carousel').style.transform = `translateX(${offset}px)`;
             }, 150);
             
             currentIndex = index;

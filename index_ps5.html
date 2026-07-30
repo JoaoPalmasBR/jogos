@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hub de Jogos - Estilo PS5</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --ps5-blue: #00439c;
-            --ps5-glow: rgba(255,255,255,0.2);
-            --transition-speed: 0.4s;
+            --ps5-glow: rgba(255, 255, 255, 0.35);
+            --transition-speed: 0.35s;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
@@ -22,7 +22,7 @@
         }
 
         body {
-            background-color: #000;
+            background-color: #050508;
             color: #fff;
             overflow: hidden;
             height: 100vh;
@@ -31,6 +31,7 @@
             flex-direction: column;
         }
 
+        /* Background Layers */
         #bg-layer {
             position: absolute;
             top: 0;
@@ -39,7 +40,8 @@
             height: 100%;
             background-size: cover;
             background-position: center;
-            transition: background-image var(--transition-speed) ease-in-out;
+            transition: background-image 0.5s ease-in-out, transform 0.8s ease-out;
+            transform: scale(1.03);
             z-index: -2;
         }
 
@@ -49,88 +51,163 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.8) 100%);
+            background: radial-gradient(circle at 70% 30%, rgba(0,0,0,0.1) 0%, rgba(5,5,8,0.85) 70%, #050508 100%),
+                        linear-gradient(180deg, rgba(5,5,8,0.4) 0%, rgba(5,5,8,0.95) 100%);
             z-index: -1;
         }
 
-        /* Top Bar */
+        /* Header Navigation */
         header {
             display: flex;
             justify-content: space-between;
-            padding: 40px 60px;
             align-items: center;
+            padding: 35px 60px 10px 60px;
             z-index: 10;
         }
-        
-        .logo-text {
-            font-size: 24px; 
-            font-weight: 800; 
-            letter-spacing: 2px;
-        }
-        
-        .top-icons {
+
+        .header-left {
             display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .logo-text {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, #fff 0%, #aaa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-tab {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.5);
+            cursor: pointer;
+            position: relative;
+            padding-bottom: 6px;
+            transition: color 0.2s;
+        }
+
+        .nav-tab.active {
+            color: #fff;
+        }
+
+        .nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #fff;
+            border-radius: 2px;
+            box-shadow: 0 0 10px #fff;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
             gap: 20px;
         }
-        
-        .top-icons div {
-            width: 32px;
-            height: 32px;
-            background: rgba(255,255,255,0.2);
+
+        .icon-btn {
+            width: 38px;
+            height: 38px;
+            background: rgba(255,255,255,0.12);
             border-radius: 50%;
-            -webkit-backdrop-filter: blur(10px);
-            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 14px;
+            font-size: 16px;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.2s;
         }
 
-        /* Game List */
+        .icon-btn:hover {
+            background: rgba(255,255,255,0.25);
+            transform: scale(1.08);
+        }
+
+        .clock {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-left: 10px;
+            color: rgba(255,255,255,0.85);
+        }
+
+        /* Game Tiles Row */
         .games-container {
             display: flex;
-            gap: 15px;
-            padding: 20px 60px;
-            margin-top: 40px;
+            gap: 18px;
+            padding: 25px 60px;
+            margin-top: 20px;
             z-index: 10;
         }
 
         .game-tile {
-            width: 110px;
-            height: 110px;
-            border-radius: 20px;
+            width: 115px;
+            height: 115px;
+            border-radius: 22px;
             overflow: hidden;
             border: 3px solid transparent;
             cursor: pointer;
-            transition: all var(--transition-speed) cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-            background-color: #222;
+            position: relative;
+            transition: all var(--transition-speed) cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.6);
+            background-color: #1a1a24;
         }
 
         .game-tile img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        /* Shimmer effect on hover/focus */
+        .game-tile::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 45%, rgba(255,255,255,0.25) 50%, transparent 55%);
+            transform: rotate(30deg) translateY(-100%);
+            transition: transform 0.6s;
         }
 
         .game-tile.active {
-            transform: scale(1.15) translateY(-10px);
-            border-color: #fff;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.7), 0 0 20px var(--ps5-glow);
+            transform: scale(1.18) translateY(-8px);
+            border-color: #ffffff;
+            box-shadow: 0 20px 45px rgba(0,0,0,0.8), 0 0 35px var(--ps5-glow);
         }
 
-        /* Game Details */
+        .game-tile.active::after {
+            transform: rotate(30deg) translateY(100%);
+        }
+
+        /* Game Details Area */
         .game-details {
             flex-grow: 1;
-            padding: 40px 60px;
+            padding: 20px 60px 110px 60px;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            padding-bottom: 100px;
             z-index: 10;
             opacity: 0;
-            transform: translateY(20px);
-            transition: all var(--transition-speed) ease;
+            transform: translateY(25px);
+            transition: all 0.4s ease-out;
         }
 
         .game-details.visible {
@@ -138,73 +215,113 @@
             transform: translateY(0);
         }
 
+        .game-category {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #0088ff;
+            margin-bottom: 8px;
+        }
+
         .game-logo {
-            font-size: 4rem;
+            font-size: 4.2rem;
             font-weight: 800;
             letter-spacing: -2px;
-            margin-bottom: 10px;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.8);
+            margin-bottom: 12px;
+            text-shadow: 0 6px 30px rgba(0,0,0,0.9);
+            line-height: 1.1;
         }
 
         .game-desc {
-            max-width: 600px;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            color: #ddd;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-            margin-bottom: 30px;
+            max-width: 620px;
+            font-size: 1.15rem;
+            line-height: 1.65;
+            color: rgba(255,255,255,0.85);
+            text-shadow: 0 3px 15px rgba(0,0,0,0.9);
+            margin-bottom: 35px;
+            font-weight: 400;
+        }
+
+        .action-bar {
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
 
         .play-btn {
-            background-color: rgba(255,255,255,0.9);
-            color: #000;
+            background-color: #ffffff;
+            color: #050508;
             border: none;
-            padding: 15px 40px;
-            border-radius: 30px;
-            font-size: 1.2rem;
-            font-weight: 600;
+            padding: 16px 45px;
+            border-radius: 40px;
+            font-size: 1.25rem;
+            font-weight: 700;
             cursor: pointer;
-            width: fit-content;
-            transition: all 0.2s;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             text-decoration: none;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(255,255,255,0.2);
         }
 
         .play-btn:hover {
-            background-color: #fff;
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(255,255,255,0.5);
+            background-color: #ffffff;
+            transform: scale(1.06);
+            box-shadow: 0 12px 35px rgba(255,255,255,0.4), 0 0 20px rgba(255,255,255,0.6);
         }
 
-        /* Footer Switcher */
-        .theme-switcher {
-            position: absolute;
-            bottom: 30px;
-            right: 60px;
-            display: flex;
-            gap: 10px;
-            background: rgba(0,0,0,0.5);
-            padding: 10px;
-            border-radius: 20px;
+        .secondary-btn {
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 16px 24px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
             -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.2s;
+        }
+
+        .secondary-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* Pill Switcher Widget */
+        .theme-switcher-pill {
+            position: absolute;
+            bottom: 35px;
+            right: 60px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(15, 15, 25, 0.65);
+            padding: 6px 8px;
+            border-radius: 30px;
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
             z-index: 20;
         }
 
         .theme-btn {
             background: transparent;
-            color: #aaa;
+            color: rgba(255,255,255,0.6);
             border: none;
-            padding: 5px 15px;
-            border-radius: 15px;
+            padding: 8px 18px;
+            border-radius: 20px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.2s;
+            font-size: 0.88rem;
+            transition: all 0.25s ease;
             text-decoration: none;
-            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .theme-btn:hover {
@@ -213,10 +330,23 @@
         }
 
         .theme-btn.active {
-            color: #000;
-            background: #fff;
+            color: #050508;
+            background: #ffffff;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(255,255,255,0.3);
         }
 
+        .theme-btn .led {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #555;
+        }
+
+        .theme-btn.active .led {
+            background: #0055ff;
+            box-shadow: 0 0 6px #0055ff;
+        }
     </style>
 </head>
 <body>
@@ -225,34 +355,55 @@
     <div id="bg-overlay"></div>
 
     <header>
-        <div class="logo-text">HUB</div>
-        <div class="top-icons">
-            <div>⚙</div>
-            <div>👤</div>
-            <div>12:00</div>
+        <div class="header-left">
+            <div class="logo-text">HUB</div>
+            <div class="nav-tabs">
+                <div class="nav-tab active">Jogos</div>
+                <div class="nav-tab">Mídia</div>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="icon-btn" title="Buscar">🔍</div>
+            <div class="icon-btn" title="Configurações">⚙️</div>
+            <div class="icon-btn" title="Perfil">👤</div>
+            <div class="clock" id="live-clock">12:00</div>
         </div>
     </header>
 
     <div class="games-container" id="games-container">
-        <!-- Jogos injetados pelo JS -->
+        <!-- Jogos injetados dinamicamente -->
     </div>
 
     <div class="game-details" id="game-details">
+        <div class="game-category" id="game-category">PS5 • JOGO DIGITAL</div>
         <h1 class="game-logo" id="game-title">Carregando...</h1>
         <p class="game-desc" id="game-desc">Aguarde enquanto os jogos são carregados.</p>
-        <a href="#" class="play-btn" id="play-btn">▶ Jogar</a>
+        <div class="action-bar">
+            <a href="#" class="play-btn" id="play-btn"><span>▶</span> Jogar</a>
+            <button class="secondary-btn" id="info-btn">⋯</button>
+        </div>
     </div>
 
-    <div class="theme-switcher">
-        <a href="index_ps2.html" class="theme-btn">PS2</a>
-        <a href="index_ps3.html" class="theme-btn">PS3</a>
-        <a href="index_ps4.html" class="theme-btn">PS4</a>
-        <a href="index_ps5.html" class="theme-btn active">PS5</a>
+    <!-- Seletor Pill Estilizado -->
+    <div class="theme-switcher-pill">
+        <a href="index_ps2.html" class="theme-btn"><span class="led"></span>PS2</a>
+        <a href="index_ps3.html" class="theme-btn"><span class="led"></span>PS3</a>
+        <a href="index_ps4.html" class="theme-btn"><span class="led"></span>PS4</a>
+        <a href="index_ps5.html" class="theme-btn active"><span class="led"></span>PS5</a>
     </div>
 
     <script>
         let jogos = [];
         let currentIndex = 0;
+
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('live-clock').textContent = `${hours}:${minutes}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
 
         async function carregarJogos() {
             try {
@@ -300,7 +451,6 @@
             const desc = document.getElementById('game-desc');
             const btn = document.getElementById('play-btn');
 
-            // Animação de fade
             details.classList.remove('visible');
             
             setTimeout(() => {
@@ -310,18 +460,17 @@
                 
                 if(jogo.pasta !== "#") {
                     btn.href = `${jogo.pasta}/`;
-                    btn.style.display = 'block';
+                    btn.style.display = 'inline-flex';
                 } else {
                     btn.style.display = 'none';
                 }
                 
                 details.classList.add('visible');
-            }, 200);
+            }, 180);
             
             currentIndex = index;
         }
 
-        // Navegação por teclado
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight' && currentIndex < jogos.length - 1) {
                 selecionarJogo(currentIndex + 1);

@@ -7,8 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --xmb-bg: #111;
-            --xmb-highlight: #fff;
+            --xmb-bg: #0a0a0f;
+            --xmb-highlight: #ffffff;
         }
 
         * {
@@ -22,10 +22,6 @@
 
         body {
             background-color: var(--xmb-bg);
-            /* Simulação clássica da onda do PS3 com gradientes em movimento */
-            background-image: 
-                radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 0%, transparent 60%),
-                linear-gradient(45deg, #0f2027, #203a43, #2c5364);
             color: #fff;
             overflow: hidden;
             height: 100vh;
@@ -34,154 +30,300 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            position: relative;
         }
 
-        /* Linha Guia XMB */
+        /* Animated Live PS3 Wave Canvas */
+        #wave-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Category Header Row (XMB Horizontal) */
+        .xmb-categories {
+            position: absolute;
+            top: 15%;
+            display: flex;
+            gap: 60px;
+            z-index: 10;
+        }
+
+        .xmb-cat {
+            font-size: 1.5rem;
+            opacity: 0.4;
+            transition: all 0.25s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .xmb-cat span {
+            font-size: 0.85rem;
+            font-weight: 300;
+        }
+
+        .xmb-cat.active {
+            opacity: 1;
+            transform: scale(1.15);
+            text-shadow: 0 0 15px rgba(255,255,255,0.8);
+        }
+
+        /* Horizontal Guide Line */
         .xmb-line {
             position: absolute;
-            top: 50%;
+            top: 52%;
             left: 0;
             width: 100%;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
-            z-index: 1;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+            z-index: 2;
         }
 
-        /* Ribbon Horizontal */
-        .xmb-ribbon {
+        /* Vertical Items List (Games Column) */
+        .xmb-vertical-container {
+            position: absolute;
+            top: 42%;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 40px;
-            transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            gap: 30px;
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 10;
         }
 
         .xmb-item {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            opacity: 0.5;
-            transform: scale(0.8);
-            transition: all 0.2s;
+            gap: 25px;
+            opacity: 0.4;
+            transform: scale(0.85);
+            transition: all 0.25s;
             cursor: pointer;
+            width: 450px;
         }
 
         .xmb-icon {
-            width: 100px;
-            height: 100px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            width: 90px;
+            height: 90px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.6);
             object-fit: cover;
             border: 2px solid transparent;
-            margin-bottom: 20px;
+            transition: all 0.25s;
+            background: #111;
+        }
+
+        .xmb-details {
+            display: flex;
+            flex-direction: column;
         }
 
         .xmb-title {
-            font-size: 1.2rem;
-            font-weight: 300;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-            opacity: 0;
-            transition: opacity 0.2s;
+            font-size: 1.3rem;
+            font-weight: 400;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+        }
+
+        .xmb-subtext {
+            font-size: 0.9rem;
+            color: #bbb;
+            margin-top: 4px;
+            max-width: 300px;
+            line-height: 1.3;
+            display: none;
         }
 
         .xmb-item.active {
             opacity: 1;
-            transform: scale(1.3);
+            transform: scale(1.15);
         }
 
         .xmb-item.active .xmb-icon {
-            border-color: rgba(255,255,255,0.8);
-            box-shadow: 0 0 20px rgba(255,255,255,0.6);
+            border-color: rgba(255,255,255,0.9);
+            box-shadow: 0 0 25px rgba(255,255,255,0.7);
         }
 
-        .xmb-item.active .xmb-title {
-            opacity: 1;
+        .xmb-item.active .xmb-subtext {
+            display: block;
         }
 
         .play-hint {
             position: absolute;
-            bottom: 20%;
-            font-size: 0.9rem;
-            color: #aaa;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        
-        .play-hint.visible {
-            opacity: 1;
+            bottom: 15%;
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.7);
+            z-index: 10;
             animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
-            0% { opacity: 0.5; }
+            0% { opacity: 0.4; }
             50% { opacity: 1; }
-            100% { opacity: 0.5; }
+            100% { opacity: 0.4; }
         }
 
-        /* Theme Switcher */
-        .theme-switcher {
+        /* Pill Switcher Widget */
+        .theme-switcher-pill {
             position: absolute;
-            bottom: 20px;
+            bottom: 30px;
+            right: 60px;
             display: flex;
-            gap: 20px;
-            background: transparent;
+            align-items: center;
+            gap: 6px;
+            background: rgba(10, 10, 15, 0.65);
+            padding: 6px 8px;
+            border-radius: 30px;
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
             z-index: 20;
         }
 
         .theme-btn {
-            color: #888;
+            background: transparent;
+            color: rgba(255,255,255,0.6);
+            border: none;
+            padding: 8px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.88rem;
+            transition: all 0.25s ease;
             text-decoration: none;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .theme-btn:hover {
-            color: #ddd;
+            color: #fff;
+            background: rgba(255,255,255,0.1);
         }
 
         .theme-btn.active {
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+            color: #000;
+            background: #ffffff;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(255,255,255,0.3);
+        }
+
+        .theme-btn .led {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #555;
+        }
+
+        .theme-btn.active .led {
+            background: #00aaff;
+            box-shadow: 0 0 6px #00aaff;
         }
     </style>
 </head>
 <body>
 
-    <div class="xmb-line"></div>
+    <canvas id="wave-canvas"></canvas>
 
-    <div class="xmb-ribbon" id="ribbon">
-        <!-- Itens injetados -->
+    <div class="xmb-categories">
+        <div class="xmb-cat">👤<span>Usuários</span></div>
+        <div class="xmb-cat">⚙️<span>Ajustes</span></div>
+        <div class="xmb-cat active">🎮<span>Jogos</span></div>
+        <div class="xmb-cat">🎵<span>Música</span></div>
+        <div class="xmb-cat">🌐<span>Rede</span></div>
     </div>
 
-    <div class="play-hint" id="play-hint">Pressione [ENTER] ou clique no ícone para iniciar</div>
+    <div class="xmb-line"></div>
 
-    <div class="theme-switcher">
-        <a href="index_ps2.html" class="theme-btn">PS2</a>
-        <a href="index_ps3.html" class="theme-btn active">PS3</a>
-        <a href="index_ps4.html" class="theme-btn">PS4</a>
-        <a href="index_ps5.html" class="theme-btn">PS5</a>
+    <div class="xmb-vertical-container" id="xmb-container">
+        <!-- Jogos injetados -->
+    </div>
+
+    <div class="play-hint" id="play-hint">Pressione [ENTER] ou clique para iniciar</div>
+
+    <!-- Seletor Pill Estilizado -->
+    <div class="theme-switcher-pill">
+        <a href="index_ps2.html" class="theme-btn"><span class="led"></span>PS2</a>
+        <a href="index_ps3.html" class="theme-btn active"><span class="led"></span>PS3</a>
+        <a href="index_ps4.html" class="theme-btn"><span class="led"></span>PS4</a>
+        <a href="index_ps5.html" class="theme-btn"><span class="led"></span>PS5</a>
     </div>
 
     <script>
         let jogos = [];
         let currentIndex = 0;
 
+        // Wave PS3 Canvas Animation
+        const canvas = document.getElementById('wave-canvas');
+        const ctx = canvas.getContext('2d');
+        let step = 0;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function drawWave() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            step += 0.015;
+
+            // Fundo Gradiente XMB
+            const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            grad.addColorStop(0, '#0a101d');
+            grad.addColorStop(0.5, '#15253b');
+            grad.addColorStop(1, '#05070c');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Desenhar 3 Ondas sobrepostas
+            for (let i = 0; i < 3; i++) {
+                ctx.beginPath();
+                ctx.moveTo(0, canvas.height * 0.5);
+
+                for (let x = 0; x < canvas.width; x += 10) {
+                    const y = Math.sin(x * 0.003 + step + i) * 60 + Math.cos(x * 0.0015 + step) * 40 + (canvas.height * 0.5);
+                    ctx.lineTo(x, y);
+                }
+
+                ctx.lineTo(canvas.width, canvas.height);
+                ctx.lineTo(0, canvas.height);
+                ctx.closePath();
+
+                const waveGrad = ctx.createLinearGradient(0, 0, canvas.width, 0);
+                waveGrad.addColorStop(0, `rgba(0, 150, 255, ${0.1 - i * 0.02})`);
+                waveGrad.addColorStop(0.5, `rgba(255, 255, 255, ${0.15 - i * 0.03})`);
+                waveGrad.addColorStop(1, `rgba(0, 100, 200, ${0.08 - i * 0.02})`);
+                ctx.fillStyle = waveGrad;
+                ctx.fill();
+            }
+
+            requestAnimationFrame(drawWave);
+        }
+        drawWave();
+
         async function carregarJogos() {
             try {
                 const response = await fetch('jogos.json');
                 jogos = await response.json();
-                renderizarRibbon();
+                renderizarXMB();
                 selecionarJogo(0);
             } catch (error) {
                 console.error(error);
             }
         }
 
-        function renderizarRibbon() {
-            const ribbon = document.getElementById('ribbon');
-            ribbon.innerHTML = '';
+        function renderizarXMB() {
+            const container = document.getElementById('xmb-container');
+            container.innerHTML = '';
             
             jogos.forEach((jogo, index) => {
                 const item = document.createElement('div');
@@ -198,13 +340,23 @@
                 img.className = 'xmb-icon';
                 img.src = jogo.imagem_capa;
                 
+                const details = document.createElement('div');
+                details.className = 'xmb-details';
+                
                 const title = document.createElement('div');
                 title.className = 'xmb-title';
                 title.textContent = jogo.nome;
                 
+                const subtext = document.createElement('div');
+                subtext.className = 'xmb-subtext';
+                subtext.textContent = jogo.descricao;
+
+                details.appendChild(title);
+                details.appendChild(subtext);
+                
                 item.appendChild(img);
-                item.appendChild(title);
-                ribbon.appendChild(item);
+                item.appendChild(details);
+                container.appendChild(item);
             });
         }
 
@@ -220,25 +372,22 @@
             const hint = document.getElementById('play-hint');
             
             if (jogo.pasta !== "#") {
-                hint.classList.add('visible');
+                hint.style.display = 'block';
             } else {
-                hint.classList.remove('visible');
+                hint.style.display = 'none';
             }
 
-            // Centraliza o item ativo na tela
-            // A largura base de cada item + gap é aprox 140px
-            const offset = index * -140; 
-            // Adicionamos um deslocamento para centrar dependendo da quantidade (cálculo simples para alinhar ao centro visual)
-            const centerAdjust = (items.length * 140) / 2 - 70;
-            document.getElementById('ribbon').style.transform = `translateX(${offset + centerAdjust}px)`;
+            // Deslocamento vertical na XMB
+            const offset = index * -125;
+            document.getElementById('xmb-container').style.transform = `translateY(${offset}px)`;
             
             currentIndex = index;
         }
 
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' && currentIndex < jogos.length - 1) {
+            if (e.key === 'ArrowDown' && currentIndex < jogos.length - 1) {
                 selecionarJogo(currentIndex + 1);
-            } else if (e.key === 'ArrowLeft' && currentIndex > 0) {
+            } else if (e.key === 'ArrowUp' && currentIndex > 0) {
                 selecionarJogo(currentIndex - 1);
             } else if (e.key === 'Enter') {
                 if (jogos[currentIndex] && jogos[currentIndex].pasta !== "#") {
