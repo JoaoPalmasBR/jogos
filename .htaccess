@@ -5,7 +5,7 @@ RewriteBase /jogos/
 ErrorDocument 404 /jogos/404.html
 
 # Dashboard Padrão
-DirectoryIndex index_ps5.html
+DirectoryIndex index_ps5.html index.html index.php
 
 # URLs amigáveis para os Temas PlayStation
 RewriteRule ^ps2/?$ index_ps2.html [L]
