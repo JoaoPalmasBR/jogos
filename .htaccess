@@ -1,0 +1,18 @@
+RewriteEngine On
+RewriteBase /jogos/
+
+# Página de Erro Personalizada
+ErrorDocument 404 /jogos/404.html
+
+# Dashboard Padrão
+DirectoryIndex index_ps5.html
+
+# Remover extensão .html
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^(.*)$ $1.html [L]
+
+# Remover extensão .php (opcional, para acesso direto a scripts se houver)
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^(.*)$ $1.php [L]

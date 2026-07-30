@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hub de Jogos - Estilo PS5</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ps5-blue: #00439c;
+            --ps5-glow: rgba(255,255,255,0.2);
+            --transition-speed: 0.4s;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #bg-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: background-image var(--transition-speed) ease-in-out;
+            z-index: -2;
+        }
+
+        #bg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.8) 100%);
+            z-index: -1;
+        }
+
+        /* Top Bar */
+        header {
+            display: flex;
+            justify-content: space-between;
+            padding: 40px 60px;
+            align-items: center;
+            z-index: 10;
+        }
+        
+        .logo-text {
+            font-size: 24px; 
+            font-weight: 800; 
+            letter-spacing: 2px;
+        }
+        
+        .top-icons {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .top-icons div {
+            width: 32px;
+            height: 32px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        /* Game List */
+        .games-container {
+            display: flex;
+            gap: 15px;
+            padding: 20px 60px;
+            margin-top: 40px;
+            z-index: 10;
+        }
+
+        .game-tile {
+            width: 110px;
+            height: 110px;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: all var(--transition-speed) cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            background-color: #222;
+        }
+
+        .game-tile img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .game-tile.active {
+            transform: scale(1.15) translateY(-10px);
+            border-color: #fff;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.7), 0 0 20px var(--ps5-glow);
+        }
+
+        /* Game Details */
+        .game-details {
+            flex-grow: 1;
+            padding: 40px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding-bottom: 100px;
+            z-index: 10;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all var(--transition-speed) ease;
+        }
+
+        .game-details.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .game-logo {
+            font-size: 4rem;
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 10px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.8);
+        }
+
+        .game-desc {
+            max-width: 600px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #ddd;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            margin-bottom: 30px;
+        }
+
+        .play-btn {
+            background-color: rgba(255,255,255,0.9);
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: fit-content;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .play-btn:hover {
+            background-color: #fff;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255,255,255,0.5);
+        }
+
+        /* Footer Switcher */
+        .theme-switcher {
+            position: absolute;
+            bottom: 30px;
+            right: 60px;
+            display: flex;
+            gap: 10px;
+            background: rgba(0,0,0,0.5);
+            padding: 10px;
+            border-radius: 20px;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            z-index: 20;
+        }
+
+        .theme-btn {
+            background: transparent;
+            color: #aaa;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .theme-btn:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .theme-btn.active {
+            color: #000;
+            background: #fff;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="bg-layer"></div>
+    <div id="bg-overlay"></div>
+
+    <header>
+        <div class="logo-text">HUB</div>
+        <div class="top-icons">
+            <div>⚙</div>
+            <div>👤</div>
+            <div>12:00</div>
+        </div>
+    </header>
+
+    <div class="games-container" id="games-container">
+        <!-- Jogos injetados pelo JS -->
+    </div>
+
+    <div class="game-details" id="game-details">
+        <h1 class="game-logo" id="game-title">Carregando...</h1>
+        <p class="game-desc" id="game-desc">Aguarde enquanto os jogos são carregados.</p>
+        <a href="#" class="play-btn" id="play-btn">▶ Jogar</a>
+    </div>
+
+    <div class="theme-switcher">
+        <a href="index_ps2.html" class="theme-btn">PS2</a>
+        <a href="index_ps3.html" class="theme-btn">PS3</a>
+        <a href="index_ps4.html" class="theme-btn">PS4</a>
+        <a href="index_ps5.html" class="theme-btn active">PS5</a>
+    </div>
+
+    <script>
+        let jogos = [];
+        let currentIndex = 0;
+
+        async function carregarJogos() {
+            try {
+                const response = await fetch('jogos.json');
+                jogos = await response.json();
+                renderizarTiles();
+                selecionarJogo(0);
+            } catch (error) {
+                console.error("Erro ao carregar jogos.json", error);
+                document.getElementById('game-title').textContent = "Erro";
+                document.getElementById('game-desc').textContent = "Não foi possível carregar o catálogo de jogos.";
+            }
+        }
+
+        function renderizarTiles() {
+            const container = document.getElementById('games-container');
+            container.innerHTML = '';
+            
+            jogos.forEach((jogo, index) => {
+                const tile = document.createElement('div');
+                tile.className = 'game-tile';
+                tile.onclick = () => selecionarJogo(index);
+                
+                const img = document.createElement('img');
+                img.src = jogo.imagem_capa;
+                img.alt = jogo.nome;
+                
+                tile.appendChild(img);
+                container.appendChild(tile);
+            });
+        }
+
+        function selecionarJogo(index) {
+            const tiles = document.querySelectorAll('.game-tile');
+            tiles.forEach(t => t.classList.remove('active'));
+            
+            if(tiles[index]) {
+                tiles[index].classList.add('active');
+            }
+
+            const jogo = jogos[index];
+            const bgLayer = document.getElementById('bg-layer');
+            const details = document.getElementById('game-details');
+            const title = document.getElementById('game-title');
+            const desc = document.getElementById('game-desc');
+            const btn = document.getElementById('play-btn');
+
+            // Animação de fade
+            details.classList.remove('visible');
+            
+            setTimeout(() => {
+                bgLayer.style.backgroundImage = `url('${jogo.imagem_fundo}')`;
+                title.textContent = jogo.nome;
+                desc.textContent = jogo.descricao;
+                
+                if(jogo.pasta !== "#") {
+                    btn.href = `${jogo.pasta}/`;
+                    btn.style.display = 'block';
+                } else {
+                    btn.style.display = 'none';
+                }
+                
+                details.classList.add('visible');
+            }, 200);
+            
+            currentIndex = index;
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' && currentIndex < jogos.length - 1) {
+                selecionarJogo(currentIndex + 1);
+            } else if (e.key === 'ArrowLeft' && currentIndex > 0) {
+                selecionarJogo(currentIndex - 1);
+            } else if (e.key === 'Enter') {
+                document.getElementById('play-btn').click();
+            }
+        });
+
+        carregarJogos();
+    </script>
+</body>
+</html>

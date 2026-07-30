@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hub de Jogos - Estilo PS4</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ps4-blue: #003791;
+            --ps4-light-blue: #0072ce;
+            --ps4-bg: linear-gradient(135deg, #001233 0%, #003791 50%, #0072ce 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background: var(--ps4-bg);
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Top Bar */
+        header {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            padding: 30px 50px;
+            gap: 30px;
+            opacity: 0.8;
+            font-size: 20px;
+        }
+
+        /* Main Content */
+        .content-area {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding-left: 100px;
+            margin-top: -50px;
+        }
+
+        .game-title-header {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        .game-title-header.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Carousel */
+        .carousel {
+            display: flex;
+            gap: 10px;
+            transition: transform 0.3s ease-out;
+        }
+
+        .game-tile {
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid transparent;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .game-tile img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .game-tile.active {
+            transform: scale(1.15);
+            border-color: #fff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            z-index: 10;
+        }
+
+        /* Game Info Details */
+        .game-info {
+            margin-top: 50px;
+            max-width: 600px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .game-info.visible {
+            opacity: 1;
+        }
+
+        .game-desc {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            color: #d0e5ff;
+            margin-bottom: 20px;
+        }
+
+        .play-btn {
+            background-color: transparent;
+            color: #fff;
+            border: 2px solid #fff;
+            padding: 10px 30px;
+            font-size: 1.1rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+
+        .play-btn:hover {
+            background-color: #fff;
+            color: var(--ps4-blue);
+        }
+
+        /* Theme Switcher */
+        .theme-switcher {
+            position: absolute;
+            bottom: 30px;
+            right: 50px;
+            display: flex;
+            gap: 10px;
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .theme-btn {
+            color: #ccc;
+            text-decoration: none;
+            padding: 5px 15px;
+            border-radius: 3px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .theme-btn:hover {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+        }
+
+        .theme-btn.active {
+            background: #fff;
+            color: var(--ps4-blue);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div>➕</div>
+        <div>👥</div>
+        <div>🏆</div>
+        <div>⚙️</div>
+    </header>
+
+    <div class="content-area">
+        <div class="game-title-header" id="game-title">Carregando...</div>
+        
+        <div class="carousel" id="carousel">
+            <!-- Tiles -->
+        </div>
+
+        <div class="game-info" id="game-info">
+            <p class="game-desc" id="game-desc"></p>
+            <a href="#" class="play-btn" id="play-btn">Iniciar</a>
+        </div>
+    </div>
+
+    <div class="theme-switcher">
+        <a href="index_ps2.html" class="theme-btn">PS2</a>
+        <a href="index_ps3.html" class="theme-btn">PS3</a>
+        <a href="index_ps4.html" class="theme-btn active">PS4</a>
+        <a href="index_ps5.html" class="theme-btn">PS5</a>
+    </div>
+
+    <script>
+        let jogos = [];
+        let currentIndex = 0;
+
+        async function carregarJogos() {
+            try {
+                const response = await fetch('jogos.json');
+                jogos = await response.json();
+                renderizarTiles();
+                selecionarJogo(0);
+            } catch (error) {
+                console.error(error);
+                document.getElementById('game-title').textContent = "Erro";
+            }
+        }
+
+        function renderizarTiles() {
+            const carousel = document.getElementById('carousel');
+            carousel.innerHTML = '';
+            
+            jogos.forEach((jogo, index) => {
+                const tile = document.createElement('div');
+                tile.className = 'game-tile';
+                tile.onclick = () => selecionarJogo(index);
+                
+                const img = document.createElement('img');
+                img.src = jogo.imagem_capa;
+                
+                tile.appendChild(img);
+                carousel.appendChild(tile);
+            });
+        }
+
+        function selecionarJogo(index) {
+            const tiles = document.querySelectorAll('.game-tile');
+            tiles.forEach(t => t.classList.remove('active'));
+            
+            if(tiles[index]) {
+                tiles[index].classList.add('active');
+            }
+
+            const jogo = jogos[index];
+            const title = document.getElementById('game-title');
+            const info = document.getElementById('game-info');
+            const desc = document.getElementById('game-desc');
+            const btn = document.getElementById('play-btn');
+
+            title.classList.remove('visible');
+            info.classList.remove('visible');
+            
+            setTimeout(() => {
+                title.textContent = jogo.nome;
+                desc.textContent = jogo.descricao;
+                
+                if(jogo.pasta !== "#") {
+                    btn.href = `${jogo.pasta}/`;
+                    btn.style.display = 'inline-block';
+                } else {
+                    btn.style.display = 'none';
+                }
+                
+                title.classList.add('visible');
+                info.classList.add('visible');
+                
+                // Centralizar o carrossel (ajuste básico)
+                const offset = index * -210; 
+                document.getElementById('carousel').style.transform = `translateX(${offset + 50}px)`;
+            }, 150);
+            
+            currentIndex = index;
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' && currentIndex < jogos.length - 1) {
+                selecionarJogo(currentIndex + 1);
+            } else if (e.key === 'ArrowLeft' && currentIndex > 0) {
+                selecionarJogo(currentIndex - 1);
+            } else if (e.key === 'Enter') {
+                document.getElementById('play-btn').click();
+            }
+        });
+
+        carregarJogos();
+    </script>
+</body>
+</html>

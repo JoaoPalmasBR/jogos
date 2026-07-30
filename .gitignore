@@ -1,0 +1,7 @@
+# Editor / Workspace
+*.code-workspace
+.vscode/
+
+# SO
+.DS_Store
+Thumbs.db
