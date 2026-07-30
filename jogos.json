@@ -12,7 +12,7 @@
     "nome": "Em Breve...",
     "pasta": "#",
     "descricao": "Novos títulos incríveis serão adicionados ao Hub em breve. Fique ligado!",
-    "imagem_capa": "https://images.unsplash.com/photo-1614036417651-1d473c6b5b54?q=80&w=600&auto=format&fit=crop",
-    "imagem_fundo": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1920&auto=format&fit=crop"
+    "imagem_capa": "assets/em_breve_cover.png",
+    "imagem_fundo": "assets/em_breve_bg.png"
   }
 ]
