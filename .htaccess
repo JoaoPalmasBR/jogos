@@ -1,8 +1,11 @@
 RewriteEngine On
 RewriteBase /jogos/
 
-# Página de Erro Personalizada
+# Páginas de Erro Personalizadas
+ErrorDocument 401 /jogos/401.html
+ErrorDocument 403 /jogos/403.html
 ErrorDocument 404 /jogos/404.html
+ErrorDocument 500 /jogos/500.html
 
 # Dashboard Padrão
 DirectoryIndex index_ps5.html index.html index.php
